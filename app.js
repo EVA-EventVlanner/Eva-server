@@ -9,7 +9,8 @@ const users = require('./routes/users');
 
 const app = express();
 const cors = require('cors')
-
+const mongoose = require('mongoose')
+mongoose.connect('mongodb://arief:08november@ds145121.mlab.com:45121/blog-test', {useNewUrlParser: true})
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
