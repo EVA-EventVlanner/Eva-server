@@ -8,9 +8,9 @@ let eventSchema = Schema({
     budget: Number,
     items: [{type: Schema.Types.ObjectId, ref: 'item'}],
     purchasedItems: [],
-    usersWhoInDebt: [{userId: '213412124', debt: 1000}]
+    usersWhoInDebt: [{type: Schema.Types.ObjectId, ref: 'user'}]
 },{timestamp: true})
 
-let events = mongoose.model('user',eventSchema)
+let events = mongoose.model('event',eventSchema)
 
 module.exports = events

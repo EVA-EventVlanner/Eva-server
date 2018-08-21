@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 class Controller {
     static getUsers(req,res) {
         User.find()
+        .populate('event')
         .then(dataUsers=> {
             res.json({
                 message: 'data all users',
