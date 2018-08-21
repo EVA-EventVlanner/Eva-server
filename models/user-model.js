@@ -5,7 +5,7 @@ let userSchema = Schema({
     username: String,
     email: String,
     password: String,
-    event: [{type: Schema.Types.ObjectId, ref: 'event'}],
+    events: [{type: Schema.Types.ObjectId, ref: 'event'}],
     role: [],
     debt: [{type: Schema.Types.ObjectId, ref: 'debt'}]
 },{timestamp: true})

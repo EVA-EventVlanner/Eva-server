@@ -4,4 +4,5 @@ const Controller = require('../controllers/event-controller')
 /* GET users listing. */
 router.get('/', Controller.getAllEvent)
 router.post('/', Controller.createEvent)
+router.delete('/delete/:id', Controller.deleteEvent)
 module.exports = router;

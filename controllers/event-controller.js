@@ -38,7 +38,7 @@ class Controller {
         .then(event=> {
             User.findById(userId)
             .then(user=> {
-                user.event.push(event._id)
+                user.events.push(event._id)
                 user.role.push('admin')
                 User.findByIdAndUpdate(userId,user)
                 .then(newUser=> {
@@ -55,8 +55,21 @@ class Controller {
             })
         })
     }
-    deleteEvent (req,res) {
 
+    static deleteEvent (req,res) {
+        let eventId = req.params.id
+        let decoded = jwt.verify(req.headers.token, 'superfox')
+        let userId = decoded.userId
+        let index = req.body.index
+        User.findById(userId)
+        .then(user=> {
+            if (user.role[index]==='admin') {
+                console.log('Youare admin')
+            }
+            else {
+                console.log('youare not admin')
+            }
+        })
     }
 }
 
