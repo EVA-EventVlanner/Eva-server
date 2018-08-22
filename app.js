@@ -11,7 +11,13 @@ const events = require('./routes/events');
 const app = express();
 const cors = require('cors')
 const mongoose = require('mongoose')
-mongoose.connect('mongodb://arief:08november@ds145121.mlab.com:45121/blog-test', {useNewUrlParser: true})
+
+// DB Testing
+mongoose.connect('mongodb://admin:1evaadmin@ds129762.mlab.com:29762/eva_testing', {useNewUrlParser: true})
+
+// DB Development
+// mongoose.connect('mongodb://arief:08november@ds145121.mlab.com:45121/blog-test', {useNewUrlParser: true})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
