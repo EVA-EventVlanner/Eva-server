@@ -126,21 +126,38 @@ class Controller {
     }
 
     static getOneItem (req,res) {
-        let eventId = req.params.eventId
         let itemId = req.params.itemId
-        res.json({
-            eventId,
-            itemId
+        Item.findById(itemId)
+        .then(item=> {
+            res.json({
+                message: 'Get one item',
+                item
+            })
+        })
+        .catch(err=> {
+            res.json({
+                message: err
+            })
         })
     }
 
-    static deleteItemForEvent (req,res) {
+    static deleteItemFromEvent (req,res) {
         let eventId = req.params.eventId
         let itemId = req.params.itemId
+        let index = req.params.index
         console.log(eventId, itemId)
-        res.json({
-            eventId,
-            itemId
+        Item.findByIdAndRemove(itemId)
+        .then(()=> {
+            EventModel.findById(eventId)
+            .then(event=> {
+                event.items.slice(index,1)
+                EventModel.findByIdAndUpdate(eventId, event)
+                .then(newEventUpdated=> {
+                    res.json({
+                        message: 'Succesfully delete Item'
+                    })
+                })
+            })
         })
     }
 }
