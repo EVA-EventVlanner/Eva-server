@@ -18,6 +18,22 @@ class Controller {
             })
         })
     }
+
+    static getUserById(req,res) {
+        let userId = req.params.id
+        User.findById(userId)
+        .populate('events')
+        .then(user=> {
+            res.json({
+                message: 'Get one user',
+                user
+            })
+        })
+        .catch(err=> {
+            res.json({})
+        })
+    }
+    
     static register(req,res) {
         let username = req.body.username
         let email = req.body.email
