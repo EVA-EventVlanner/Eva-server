@@ -1,5 +1,6 @@
 const EventModel = require('../models/event-model')
 const User = require('../models/user-model')
+const Item = require('../models/item-model')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
@@ -93,6 +94,32 @@ class Controller {
                 })
             })
         })
+    }
+
+    static createItemForEvent (req,res) {
+        let eventId = req.params.id
+        let obj = {
+            itemName: req.params.itemName,
+            itemPrice: req.body.itemPrice,
+            event: eventId
+        }
+        console.log(obj)
+        res.json(obj)
+        // let newItem = new Item(obj)
+        // newItem.save()
+        // .then(item=> {
+        //     EventModel.findById(eventId)
+        //     .then(event=> {
+        //         event.items.push(item._id)
+        //         EventModel.findByIdAndUpdate(eventId, event)
+        //         .then(newEventUpdated=> {
+        //             res.json({
+        //                 message: 'Succesfully added new Item',
+        //                 item
+        //             })
+        //         })
+        //     })
+        // })
     }
 }
 
