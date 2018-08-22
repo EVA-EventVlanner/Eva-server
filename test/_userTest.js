@@ -11,11 +11,16 @@ const registeredUserData = {
 
 // dummy data to test creating new user, change username or disable it after this specific test passed
 const registerNewUserData = {
-                            username: 'admin6',
+                            username: Math.random().toString(36).substr(2, 9),
                             email: 'admin@eva.com',
                             password: 'admin'
 }
 
+// dummy data to delete testing
+
+let tempIdCreated = ''
+
+let unvalidIdtoDelete = '5b7d92fdee8cb4966f38bf24'
 
 chai.use(chaiHttp)
 
@@ -50,6 +55,12 @@ describe('User Testing', function() {
                 .send(registerNewUserData)
                 .end(function(err, result) {
                     result.should.have.status(200)
+                    result.body.should.have.own.property('created')
+                    result.body.created.should.have.own.property('_id')
+                    result.body.created.should.have.own.property('username')
+                    result.body.created.should.have.own.property('email')
+                    result.body.created.should.have.own.property('password')
+                    tempIdCreated = result.body.created._id
                     done()
                 })
         })
@@ -64,5 +75,72 @@ describe('User Testing', function() {
                 })
         })
 
+    })
+
+    describe('Route /:id', function() {
+        it('should return status 200 when user try to find valid user', function(done) {
+            chai.request(uriServerUser)
+                .get(`/${tempIdCreated}`)
+                .end(function(err, result) {
+                    result.should.have.status(200)
+                    done()
+            })
+        })
+    })
+
+    describe('Route /delete', function() {
+        it('should return status 200 when user try to delete a valid user data', function(done) {
+            chai.request(uriServerUser)
+                .delete(`/${tempIdCreated}`)
+                .end(function(err, result) {
+                    result.should.have.status(200)
+                    done()
+            })
+        })
+
+        it('should return status 204 when user try to delete unvalid user data', function(done) {
+            chai.request(uriServerUser)
+                .delete(`/${unvalidIdtoDelete}`)
+                .end(function(err, result) {
+                    result.should.have.status(204)
+                    done()
+            })
+        })
+    })
+
+    describe('Route /login', function() {
+        it('should return status 200 when login sucessfull', function(done) {
+            chai.request(uriServerUser)
+                .post('/login')
+                .send({ username: registeredUserData.username, password: registeredUserData.password })
+                .end(function(err, result) {
+                    result.should.have.status(200)
+                    result.body.should.have.own.property('token')
+                    done()
+                })
+        })
+
+        it('should return status 500 and specified message - if trying to submit invalid username', function(done) {
+            chai.request(uriServerUser)
+                .post('/login')
+                .send({ username: 'wrong username', password: registeredUserData.password })
+                .end(function(err, result) {
+                    result.should.have.status(500)
+                    done()
+                })
+        })
+
+        it ('should return status 203 which is not authorized to enter if given invalid password', function(done) {
+            chai.request(uriServerUser)
+                .post('/login')
+                .send({ username: registeredUserData.username, password: 'wrong password' })
+                .end(function(err, result) {
+                    // console.log(result)
+                    result.should.have.status(203)
+                    result.body.should.have.own.property('message')
+                    result.body.message.should.equal('Invalid password')
+                    done()
+                })
+        })
     })
 })
