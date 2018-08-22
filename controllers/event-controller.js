@@ -83,7 +83,6 @@ class Controller {
         User.findById(userId)
         .then(user=> {
             console.log(user.events[index])
-            user.events.splice(index,1)
             user.role.splice(index,1)
             User.findByIdAndUpdate(userId, user)
             .then(newUpdatedUser=> {
@@ -150,7 +149,7 @@ class Controller {
         .then(()=> {
             EventModel.findById(eventId)
             .then(event=> {
-                event.items.slice(index,1)
+                event.items.splice(index,1)
                 EventModel.findByIdAndUpdate(eventId, event)
                 .then(newEventUpdated=> {
                     res.json({
