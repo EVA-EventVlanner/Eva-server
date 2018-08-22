@@ -22,9 +22,10 @@ class Controller {
     }
 
     static getEventById (req,res) {
-        let eventId = req.params.id
+        let eventId = req.params.eventId
         EventModel.findById(eventId)
         .populate('admin')
+        .populate('items')
         .then(event=> {
             res.json({
                 message: 'Get one Event',
@@ -75,7 +76,7 @@ class Controller {
     }
 
     static deleteEvent (req,res) {
-        let eventId = req.params.id
+        let eventId = req.params.eventId
         let decoded = jwt.verify(req.headers.token, 'superfox')
         let userId = decoded.userId
         let index = req.body.index
@@ -97,29 +98,50 @@ class Controller {
     }
 
     static createItemForEvent (req,res) {
-        let eventId = req.params.id
+        let eventId = req.params.eventId
+        let quantity = req.body.quantity
         let obj = {
-            itemName: req.params.itemName,
+            itemName: req.body.itemName,
             itemPrice: req.body.itemPrice,
-            event: eventId
+            event: eventId,
+            quantity: quantity
         }
         console.log(obj)
-        res.json(obj)
-        // let newItem = new Item(obj)
-        // newItem.save()
-        // .then(item=> {
-        //     EventModel.findById(eventId)
-        //     .then(event=> {
-        //         event.items.push(item._id)
-        //         EventModel.findByIdAndUpdate(eventId, event)
-        //         .then(newEventUpdated=> {
-        //             res.json({
-        //                 message: 'Succesfully added new Item',
-        //                 item
-        //             })
-        //         })
-        //     })
-        // })
+        console.log(quantity)
+        let newItem = new Item(obj)
+        newItem.save()
+        .then(item=> {
+            EventModel.findById(eventId)
+            .then(event=> {
+                event.items.push(item._id)
+                EventModel.findByIdAndUpdate(eventId, event)
+                .then(newEventUpdated=> {
+                    res.json({
+                        message: 'Succesfully added new Item',
+                        item
+                    })
+                })
+            })
+        })
+    }
+
+    static getOneItem (req,res) {
+        let eventId = req.params.eventId
+        let itemId = req.params.itemId
+        res.json({
+            eventId,
+            itemId
+        })
+    }
+
+    static deleteItemForEvent (req,res) {
+        let eventId = req.params.eventId
+        let itemId = req.params.itemId
+        console.log(eventId, itemId)
+        res.json({
+            eventId,
+            itemId
+        })
     }
 }
 

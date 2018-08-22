@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 let itemSchema = Schema({
     itemName: String,
     itemPrice: Number,
+    quantity: Number,
     event: {type: Schema.Types.ObjectId, ref: 'event'},
 },{timestamp: true})
 
