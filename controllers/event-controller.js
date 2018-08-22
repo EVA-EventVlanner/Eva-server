@@ -20,6 +20,23 @@ class Controller {
         })
     }
 
+    static getEventById (req,res) {
+        let eventId = req.params.id
+        EventModel.findById(eventId)
+        .populate('admin')
+        .then(event=> {
+            res.json({
+                message: 'Get one Event',
+                event
+            })
+        })
+        .catch(err=> {
+            res.json({
+                message: 'Can\'t get user'
+            })
+        })
+    }
+
     static createEvent (req,res) {
         let decoded = jwt.verify(req.headers.token, 'superfox')
         let userId = decoded.userId
@@ -63,12 +80,18 @@ class Controller {
         let index = req.body.index
         User.findById(userId)
         .then(user=> {
-            if (user.role[index]==='admin') {
-                console.log('Youare admin')
-            }
-            else {
-                console.log('youare not admin')
-            }
+            console.log(user.events[index])
+            user.events.splice(index,1)
+            user.role.splice(index,1)
+            User.findByIdAndUpdate(userId, user)
+            .then(newUpdatedUser=> {
+                EventModel.findByIdAndRemove(eventId)
+                .then(()=> {
+                    res.json({
+                        message: 'Succesfully deleted event'
+                    })
+                })
+            })
         })
     }
 }
