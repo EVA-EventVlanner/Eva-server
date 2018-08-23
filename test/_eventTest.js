@@ -41,8 +41,6 @@ describe('Event Testing', function() {
                 })
         })
 
-
-
         it('event attribute should have properties id, items, eventName and password', function(done) {
             this.timeout(requestTimeToOut)
             chai.request(uriServerEvents)
@@ -81,5 +79,14 @@ describe('Event Testing', function() {
                     done()
                 })
         })
+    })
+
+    describe('Event - Route GET /item/:id', function() {
+            this.timeout(requestTimeToOut)
+            it('should return 200 to get item in specified event', async function() {
+                let response = await chai.request(uriServerEvents).get('/item/5b7ea7853e4824bce4ae1be4')
+
+                response.body.should.have.own.property('item')
+            })
     })
 })

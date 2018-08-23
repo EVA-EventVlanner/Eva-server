@@ -100,27 +100,6 @@ describe('User Testing', function() {
         })
     })
 
-    describe('Route /delete', function() {
-        it('should return status 200 when user try to delete a valid user data', function(done) {
-            chai.request(uriServerUser)
-                .delete(`/${tempIdCreated}`)
-                .end(function(err, result) {
-                    result.should.have.status(200)
-                    done()
-            })
-        })
-
-        it('should return status 204 when user try to delete unvalid user data', function(done) {
-            // this.timeout(requestTimeToOut)
-            chai.request(uriServerUser)
-                .delete(`/${unvalidIdtoDelete}`)
-                .end(function(err, result) {
-                    result.should.have.status(204)
-                    done()
-            })
-        })
-    })
-
     describe('Route /login', function() {
         it('should return status 200 when login sucessfull', function(done) {
             // this.timeout(requestTimeToOut)
@@ -158,6 +137,27 @@ describe('User Testing', function() {
                     result.body.message.should.equal('Invalid password')
                     done()
                 })
+        })
+    })
+
+    describe('Route /delete', function() {
+        it('should return status 200 when user try to delete a valid user data', function(done) {
+            chai.request(uriServerUser)
+                .delete(`/${tempIdCreated}`)
+                .end(function(err, result) {
+                    result.should.have.status(200)
+                    done()
+            })
+        })
+
+        it('should return status 204 when user try to delete unvalid user data', function(done) {
+            // this.timeout(requestTimeToOut)
+            chai.request(uriServerUser)
+                .delete(`/${unvalidIdtoDelete}`)
+                .end(function(err, result) {
+                    result.should.have.status(204)
+                    done()
+            })
         })
     })
 })

@@ -96,7 +96,7 @@ class Controller {
     }
 
     static login(req,res){
-        console.log(req.body)
+        console.log('-----> req body: ', req.body)
         User.findOne({ username: req.body.username })
         .then( (found) =>{
             console.log(found.password,'ini found')
