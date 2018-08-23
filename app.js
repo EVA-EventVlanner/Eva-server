@@ -13,7 +13,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 
 // DB Testing
-mongoose.connect('mongodb://admin:1evaadmin@ds129762.mlab.com:29762/eva_testing', {useNewUrlParser: true})
+mongoose.connect('mongodb://arief:08november@ds229312.mlab.com:29312/eva-db', {useNewUrlParser: true})
 
 // DB Development
 // mongoose.connect('mongodb://arief:08november@ds145121.mlab.com:45121/blog-test', {useNewUrlParser: true})
