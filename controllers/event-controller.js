@@ -25,23 +25,30 @@ class Controller {
 
     static getEventById (req,res) {
         let eventId = req.params.eventId
+
         EventModel.findById(eventId)
         .populate('admin')
         .populate('items')
         .then(event=> {
-            res.json({
-                message: 'Get one Event',
-                event
+            res
+                .status(200)
+                .json({
+                    message: 'Get one Event',
+                    event
             })
         })
         .catch(err=> {
-            res.json({
-                message: 'Can\'t get user'
+            res
+                .status(500)
+                .json({
+                    message: 'Can\'t get user'
             })
         })
     }
 
     static createEvent (req,res) {
+        console.log('----> create event')
+        
         console.log('headers', req.headers)
         console.log('body', req.body)
 
@@ -60,6 +67,7 @@ class Controller {
             admin: userId,
             budget: req.body.budget
         }
+
         let newEvent = new EventModel(obj)
         newEvent.save()
         .then(event=> {
@@ -77,9 +85,12 @@ class Controller {
             })
         })
         .catch(err=> {
-            res.json({
-                message: 'there is some error'
-            })
+            res
+                .status(500)
+                .json({
+                    message: 'there is some error',
+                    error: err.message
+                })
         })
     }
 
