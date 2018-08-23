@@ -5,6 +5,11 @@ const should = chai.should()
 chai.use(chaiHttp)
 
 describe('App Testing', function() {
+
+
+    after (function() {
+        process.exit(0)
+    })
     it('should return status 200 when app started', function(done) {
         chai.request('http://localhost:3000')
             .get('/')
