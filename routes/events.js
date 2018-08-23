@@ -9,7 +9,6 @@ router.get('/item/:itemId', Controller.getOneItem)
 router.post('/', Controller.createEvent)
 router.post('/:eventId/item', Controller.createItemForEvent)
 
-
 router.delete('/delete/:eventId', Controller.deleteEvent)
 router.delete('/:eventId/item/:itemId/delete/:index', Controller.deleteItemFromEvent)
 

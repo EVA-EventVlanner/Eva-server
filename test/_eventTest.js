@@ -5,20 +5,23 @@ const uriServerEvents = 'http://localhost:3000/events'
 
 chai.use(chaiHttp)
 
+const requestTimeToOut = 20000
+
 const newEventData = {
     eventName: 'Chai test',
     password: 'Chai test',
     admin: 'Chai test',
-    budget: 'Chai test'
+    budget: 10000000
 }
 
 const dummyHeader = {
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjdkNzNlNzdmODYwNjhlYzI0MzEwNGUiLCJpYXQiOjE1MzUwMTg1NTZ9.r9ZIygfs1zNTiTMpOFXkMKm1tPWkn4W410rVc4BffYo'
+    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjdlYTc4OTNlNDgyNGJjZTRhZTFiZTYiLCJpYXQiOjE1MzUwMjcwODN9.sDfwLIQulYZEcAJ5zwWRIShYQQooTGDVIWtK40cneb0'
 }
 
 describe('Event Testing', function() {
     describe('Route / with method GET', function() {
-        it('should return status 200 when (getAllEvents) approached', function(done) {
+        it('should return 200 when passed', function(done) {
+            this.timeout(requestTimeToOut)
             chai.request(uriServerEvents)
                 .get('/')
                 .end(function(err, result) {
@@ -28,25 +31,20 @@ describe('Event Testing', function() {
         })
 
         it('should have property events', function(done) {
+            this.timeout(requestTimeToOut)
             chai.request(uriServerEvents)
                 .get('/')
                 .end(function(err, result) {
-                    // console.log()
+                    // console.log(result.body.events[0])
                     result.body.should.have.own.property('events')
                     done()
                 })
         })
 
-        it('event attribute should be an array (of objects)', function(done) {
-            chai.request(uriServerEvents)
-                .get('/')
-                .end(function(err, result) {
-                    result.body.events.should.be.an('array')
-                    done()
-                })
-        })
 
-        it('event attribute should be an array (of objects)', function(done) {
+
+        it('event attribute should have properties id, items, eventName and password', function(done) {
+            this.timeout(requestTimeToOut)
             chai.request(uriServerEvents)
                 .get('/')
                 .end(function(err, result) {
@@ -63,23 +61,25 @@ describe('Event Testing', function() {
         })
     })
 
-    describe('Route / with method POST', function() {
-        describe('should return 200 when approached with http get method to route /<eventId>', function(done) {
+    describe('Route /:id', function() {
+        it('should return 200 when get a single event', function() {
+            this.timeout(requestTimeToOut)
             chai.request(uriServerEvents)
-                .get(`/`)
-                .send(newEventData, dummyHeader)
+                .get('/5b7ea7853e4824bce4ae1be4')
                 .end(function(err, result) {
-                    // console.log(result.body)
+                    result.should.have.status(200)
+                    done()
+                })
+        })
+        
+        it('should have property event', function() {
+            this.timeout(requestTimeToOut)
+            chai.request(uriServerEvents)
+                .get('/5b7ea7853e4824bce4ae1be4')
+                .end(function(err, result) {
+                    result.should.have.own.property('event')
                     done()
                 })
         })
     })
-
-
-    // describe('Route /:id to find event by it\'s _id attribute', function() {
-    //     describe('should return 200 when approached with http get method to route /<eventId>', function(done) {
-    //         chai.request(uriServerEvents)
-    //             .get(`/${}`)
-    //     })
-    // })
 })
