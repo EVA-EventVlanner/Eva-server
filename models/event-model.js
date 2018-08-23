@@ -6,6 +6,9 @@ let eventSchema = Schema({
     password: String,
     admin: {type: Schema.Types.ObjectId, ref: 'user'},
     budget: Number,
+    description: String,
+    imageUrl: String,
+    location: String,
     items: [{type: Schema.Types.ObjectId, ref: 'item'}],
     purchasedItems: [],
     usersWhoInDebt: [{type: Schema.Types.ObjectId, ref: 'user'}]

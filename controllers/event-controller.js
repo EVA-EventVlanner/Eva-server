@@ -58,7 +58,9 @@ class Controller {
             eventName: req.body.eventName,
             password: password,
             admin: userId,
-            budget: req.body.budget
+            budget: req.body.budget,
+            description: req.body.description,
+            imgUrl: req.body.imgUrl
         }
         let newEvent = new EventModel(obj)
         newEvent.save()
