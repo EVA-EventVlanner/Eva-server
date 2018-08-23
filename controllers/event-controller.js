@@ -60,7 +60,7 @@ class Controller {
             admin: userId,
             budget: req.body.budget,
             description: req.body.description,
-            imgUrl: req.body.imgUrl
+            imageUrl: req.body.imageUrl
         }
         let newEvent = new EventModel(obj)
         newEvent.save()
