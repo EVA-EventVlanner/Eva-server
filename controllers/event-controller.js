@@ -9,9 +9,11 @@ class Controller {
         EventModel.find()
         .populate('admin')
         .then(events=> {
-            res.json({
-                message: 'Show all event',
-                events
+            res
+                .status(200)
+                .json({
+                    message: 'Show all event',
+                    events: events
             })
         })
         .catch(err=> {
@@ -40,7 +42,13 @@ class Controller {
     }
 
     static createEvent (req,res) {
+        console.log('headers', req.headers)
+        console.log('body', req.body)
+
         let decoded = jwt.verify(req.headers.token, 'superfox')
+
+        console.log(decoded)
+
         let userId = decoded.userId
         const salt = bcrypt.genSaltSync(7);
         const hash = bcrypt.hashSync(req.body.password, salt);

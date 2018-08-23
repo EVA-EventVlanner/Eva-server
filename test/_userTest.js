@@ -82,21 +82,26 @@ describe('User Testing', function() {
             chai.request(uriServerUser)
                 .get(`/${tempIdCreated}`)
                 .end(function(err, result) {
+                    // console.log(result)
                     result.should.have.status(200)
+                    result.body.should.have.own.property('user')
+                    result.body.user.should.have.own.property('username')
+                    result.body.user.should.have.own.property('email')
+                    result.body.user.should.have.own.property('password')
                     done()
             })
         })
     })
 
     describe('Route /delete', function() {
-        it('should return status 200 when user try to delete a valid user data', function(done) {
-            chai.request(uriServerUser)
-                .delete(`/${tempIdCreated}`)
-                .end(function(err, result) {
-                    result.should.have.status(200)
-                    done()
-            })
-        })
+        // it('should return status 200 when user try to delete a valid user data', function(done) {
+        //     chai.request(uriServerUser)
+        //         .delete(`/${tempIdCreated}`)
+        //         .end(function(err, result) {
+        //             result.should.have.status(200)
+        //             done()
+        //     })
+        // })
 
         it('should return status 204 when user try to delete unvalid user data', function(done) {
             chai.request(uriServerUser)
@@ -114,6 +119,7 @@ describe('User Testing', function() {
                 .post('/login')
                 .send({ username: registeredUserData.username, password: registeredUserData.password })
                 .end(function(err, result) {
+                    // console.log(result.body.token, 'token testing')
                     result.should.have.status(200)
                     result.body.should.have.own.property('token')
                     done()
