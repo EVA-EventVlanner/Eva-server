@@ -3,11 +3,13 @@ const chaiHttp = require('chai-http')
 const should = chai.should()
 const uriServerUser = 'http://localhost:3000/users'
 
+const requestTimeToOut = 20000
+
 // dummy data to check duplicated username in database user
 const registeredUserData = { 
-                            username: 'admin',
+                            username: 'admineva',
                             email: 'admin@eva.com',
-                            password: 'admin' }
+                            password: 'admineva' }
 
 // dummy data to test creating new user, change username or disable it after this specific test passed
 const registerNewUserData = {
@@ -27,6 +29,7 @@ chai.use(chaiHttp)
 describe('User Testing', function() {
     describe('Route /', function () {
         it('should return status 200 when user route called with GET method in route /', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
             .get('/')
             .end(function(err, result) {
@@ -36,6 +39,7 @@ describe('User Testing', function() {
         })
         
         it('should return all user data in database', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
                 .get('/')
                 .end(function(err, result) {
@@ -50,6 +54,7 @@ describe('User Testing', function() {
 
     describe('Route /register', function() {    
         it('should return status 200 when user route called with POST method in route /register', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
                 .post('/register')
                 .send(registerNewUserData)
@@ -66,6 +71,7 @@ describe('User Testing', function() {
         })
 
         it('should return status 500 when any try to create user with same username input', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
                 .post('/register')
                 .send(registeredUserData)
@@ -79,6 +85,7 @@ describe('User Testing', function() {
 
     describe('Route /:id', function() {
         it('should return status 200 when user try to find valid user', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
                 .get(`/${tempIdCreated}`)
                 .end(function(err, result) {
@@ -93,28 +100,9 @@ describe('User Testing', function() {
         })
     })
 
-    describe('Route /delete', function() {
-        // it('should return status 200 when user try to delete a valid user data', function(done) {
-        //     chai.request(uriServerUser)
-        //         .delete(`/${tempIdCreated}`)
-        //         .end(function(err, result) {
-        //             result.should.have.status(200)
-        //             done()
-        //     })
-        // })
-
-        it('should return status 204 when user try to delete unvalid user data', function(done) {
-            chai.request(uriServerUser)
-                .delete(`/${unvalidIdtoDelete}`)
-                .end(function(err, result) {
-                    result.should.have.status(204)
-                    done()
-            })
-        })
-    })
-
     describe('Route /login', function() {
         it('should return status 200 when login sucessfull', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
                 .post('/login')
                 .send({ username: registeredUserData.username, password: registeredUserData.password })
@@ -127,6 +115,7 @@ describe('User Testing', function() {
         })
 
         it('should return status 500 and specified message - if trying to submit invalid username', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
                 .post('/login')
                 .send({ username: 'wrong username', password: registeredUserData.password })
@@ -137,6 +126,7 @@ describe('User Testing', function() {
         })
 
         it ('should return status 203 which is not authorized to enter if given invalid password', function(done) {
+            // this.timeout(requestTimeToOut)
             chai.request(uriServerUser)
                 .post('/login')
                 .send({ username: registeredUserData.username, password: 'wrong password' })
@@ -147,6 +137,27 @@ describe('User Testing', function() {
                     result.body.message.should.equal('Invalid password')
                     done()
                 })
+        })
+    })
+
+    describe('Route /delete', function() {
+        it('should return status 200 when user try to delete a valid user data', function(done) {
+            chai.request(uriServerUser)
+                .delete(`/${tempIdCreated}`)
+                .end(function(err, result) {
+                    result.should.have.status(200)
+                    done()
+            })
+        })
+
+        it('should return status 204 when user try to delete unvalid user data', function(done) {
+            // this.timeout(requestTimeToOut)
+            chai.request(uriServerUser)
+                .delete(`/${unvalidIdtoDelete}`)
+                .end(function(err, result) {
+                    result.should.have.status(204)
+                    done()
+            })
         })
     })
 })
