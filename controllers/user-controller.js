@@ -45,9 +45,10 @@ class Controller {
     }
     
     static register(req,res) {
-        
+        let name = req.body.name
         let username = req.body.username
         let email = req.body.email
+        let imageProfile = 'http://dragene.no/wp-content/uploads/2016/06/default1.jpg'
 
         console.log(username, 'username diterima server')
 
@@ -64,9 +65,11 @@ class Controller {
                 const hash = bcrypt.hashSync(req.body.password, salt);
                 let password = hash;
                 User.create({
+                    name,
                     username,
                     email,
-                    password
+                    password,
+                    imageProfile
                 })
                 .then(user=> {
                     res
