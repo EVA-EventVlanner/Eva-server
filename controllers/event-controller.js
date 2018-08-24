@@ -95,7 +95,34 @@ class Controller {
                 })
         })
     }
-
+    static loginEvent (req,res) {
+        let eventId = req.params.eventId
+        console.log(eventId, ' ini event id')
+        EventModel.findById({
+            _id: eventId
+        })
+        .then(event=> {
+            console.log(event)
+            const isPassword = bcrypt.compareSync(req.body.password,event.password)
+            if (isPassword) {
+                res.status(200).json({
+                    message: `Sign in success`,
+                    event
+                })
+            }
+            else {
+                res.json({
+                    message: 'Password is wrong'
+                })
+            }
+        })
+        .catch(err=> {
+            res.json({
+                message: 'There is some error happen',
+                err
+            })
+        })
+    }
     static deleteEvent (req,res) {
         let eventId = req.params.eventId
         let decoded = jwt.verify(req.headers.token, 'superfox')
