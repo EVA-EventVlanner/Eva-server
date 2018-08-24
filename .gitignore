@@ -31,3 +31,10 @@ npm-debug.log
 
 # testing
 /.nyc_output
+
+# secret environment
+.env
+
+# vision
+/source
+/vision-result
