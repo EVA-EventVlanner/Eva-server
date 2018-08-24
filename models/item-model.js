@@ -5,6 +5,7 @@ let itemSchema = Schema({
     itemName: String,
     itemPrice: Number,
     quantity: Number,
+    imageItem: String,
     event: {type: Schema.Types.ObjectId, ref: 'event'},
 },{timestamp: true})
 
