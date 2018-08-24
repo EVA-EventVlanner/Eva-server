@@ -7,10 +7,13 @@ const bodyParser = require('body-parser');
 const index = require('./routes/index');
 const users = require('./routes/users');
 const events = require('./routes/events');
+const vision = require('./routes/vision');
 
 const app = express();
 const cors = require('cors')
 const mongoose = require('mongoose')
+
+require('dotenv').config()
 
 // DB Testing
 mongoose.connect('mongodb://arief:08november@ds229312.mlab.com:29312/eva-db', {useNewUrlParser: true})
@@ -33,6 +36,7 @@ app.use(cors())
 app.use('/', index);
 app.use('/users', users);
 app.use('/events', events);
+app.use('/vision', vision);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
