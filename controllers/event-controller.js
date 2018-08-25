@@ -8,6 +8,7 @@ class Controller {
   static getAllEvent(req, res) {
     EventModel.find()
       .populate("admin")
+      .populate("items")
       .then(events => {
         res.status(200).json({
           message: "Show all event",
@@ -164,6 +165,7 @@ class Controller {
   static getOneItem(req, res) {
     let itemId = req.params.itemId;
     Item.findById(itemId)
+      .populate("items")
       .then(item => {
         res.json({
           message: "Get one item",
