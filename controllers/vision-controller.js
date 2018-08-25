@@ -1,4 +1,5 @@
 const axios = require('axios')
+const vision = require('../middlewares/vision-logic')
 
 class Controller {
 	static analyze (req, res, next) {
@@ -9,26 +10,32 @@ class Controller {
 		{
 		"requests": [
 			{
-			"features": [
-				{
-				"type": "TEXT_DETECTION"
+				"features": [
+					{
+					"type": "TEXT_DETECTION"
+					}
+				],
+				"image": {
+					"source": {
+					"imageUri": receipt
+					}
 				}
-			],
-			"image": {
-				"source": {
-				"imageUri": receipt
-				}
-			}
 			}
 		]
 		} )
 		.then(function (response) {
+			
 			response.data.responses.map( item => {
-				res.send(item.textAnnotations)
+
+				let result = vision.getItems(item.textAnnotations)
+				res.send(result)
+				
 			})
 		})
 		.catch(function (response) {
-			console.log(response.data)
+			res.status(500)
+
+			console.log(response)
 		})
 	}
 
