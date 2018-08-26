@@ -113,7 +113,6 @@ class Controller {
           let idFound = await getModelToCheck.members.filter(function(member) {
             let temp = (JSON.stringify(member))
             let newMember = temp.slice(1,temp.length-1)
-            // console.log(newMember.length, newMember)
             return newMember===userId
           })
           if (!idFound.length) {
@@ -152,6 +151,39 @@ class Controller {
     }
     
   }
+
+  static async loginEventWithoutPassword (req, res) {
+    let eventId = req.params.eventId
+    let userId = req.params.userId
+    try {
+      const GetEvent = await EventModel.findById(eventId)
+      const FilterId = await GetEvent.members.filter(function(member){
+        let temp = (JSON.stringify(member))
+        let newMember = temp.slice(1,temp.length-1)
+        return newMember===userId
+      })
+
+      if (!FilterId.length) {
+        // statement
+        res.json({
+          message: 'You\'re not member',
+          NeedPassword : true
+        })
+      }
+      else if(FilterId.length) {
+        res.json({
+          message: 'You\'re member of this event',
+          NeedPassword : false
+        })
+      }
+    }
+    catch(err) {
+      res.json({
+        err
+      })
+    }
+  }
+
   static deleteEvent(req, res) {
     let eventId = req.params.eventId;
     let decoded = jwt.verify(req.headers.token, "superfox");

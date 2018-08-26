@@ -9,6 +9,7 @@ router.get('/item/:itemId', Controller.getOneItem)
 router.post('/', Controller.createEvent)
 router.post('/:eventId/item', Controller.createItemForEvent)
 router.post('/:eventId/login/:userId', Controller.loginEvent)
+router.post('/:eventId/nopassword/:userId', Controller.loginEventWithoutPassword)
 
 router.delete('/delete/:eventId', Controller.deleteEvent)
 router.delete('/:eventId/item/:itemId/delete/:index', Controller.deleteItemFromEvent)
