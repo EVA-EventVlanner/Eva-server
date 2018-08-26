@@ -52,7 +52,8 @@ class Controller {
 
 	static analyze (req, res, next) {
 		let uri = 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDJX04YZhWWFxICsIF2u0E3t9f93sYnjqA'
-		let receipt = req.body.image_url
+		// let receipt = req.body.image_url
+		let receipt = req.file.cloudStoragePublicUrl
 
 		console.log(receipt)
 
