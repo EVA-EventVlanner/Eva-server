@@ -11,7 +11,7 @@ class middlewares {
 		let receiptTotal = 0
 		let receiptDate = ''
 
-        // console.log("------->    Start Detection...");
+        console.log("------->    Start Detection...");
 
 			let line = -1
 			let sentences = []
@@ -83,7 +83,7 @@ class middlewares {
 				let sr = sentences[j].split(" ")
 
 				// console.log("--> sentence is ",sentences[j])
-				// console.log("---->sr is ",sr)
+				console.log("---->sr is ",sr)
 				
 				let numCandidate = ""
 				let checkBefore = true
