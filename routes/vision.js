@@ -13,6 +13,10 @@ router.post('/analyze', Vision.Controller.analyze)
 //         })
 // })
 
+router.get('/test', function (req, res, next) {
+    res.status(200).send('test-ok')
+})
+
 router.post('/upload',
                 Vision.multer.single('file'),
                 Vision.Controller.uploadToStorage,

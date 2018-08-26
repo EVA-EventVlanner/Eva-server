@@ -21,6 +21,9 @@ class Controller {
 
 	static uploadToStorage (req, res, next) {
 		
+		console.log('ini file buat upload ---> ',req.file)
+		console.log('ini bodynya request ----> ', req.body)
+
 		if (!req.file) {
 			return next()
 		}
