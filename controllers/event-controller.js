@@ -88,35 +88,69 @@ class Controller {
         });
       });
   }
-  static loginEvent(req, res) {
+  // static loginAlreadyMember (req,res) {
+  //   let userId = req.params.id
+  //   let eventId = req.params.eventId
+  //   EventModel.findById(eventId)
+  //   .then(event=> {
+  //     event.
+  //   })
+  // }
+  static async loginEvent(req, res) {
     let eventId = req.params.eventId;
+    let userId = req.params.userId
     console.log(eventId, " ini event id");
-    EventModel.findById({
-      _id: eventId
-    })
-      .then(event => {
-        console.log(event);
-        const isPassword = bcrypt.compareSync(
-          req.body.password,
-          event.password
-        );
-        if (isPassword) {
-          res.status(200).json({
-            message: `Sign in success`,
-            event
-          });
-        } else {
-          res.json({
-            message: "Password is wrong"
-          });
-        }
+    console.log(userId.length, " ini user id")
+    try {
+      const getModelToCheck = await EventModel.findById({
+        _id: eventId
       })
-      .catch(err => {
-        res.json({
-          message: "There is some error happen",
-          err
-        });
-      });
+      const isPassword = await bcrypt.compareSync(
+          req.body.password,
+          getModelToCheck.password
+        )
+        if (isPassword) {
+          let idFound = await getModelToCheck.members.filter(function(member) {
+            let temp = (JSON.stringify(member))
+            let newMember = temp.slice(1,temp.length-1)
+            // console.log(newMember.length, newMember)
+            return newMember===userId
+          })
+          if (!idFound.length) {
+            // statement
+            const GetUser = await User.findById(userId)
+
+            GetUser.events.push(eventId)
+            GetUser.role.push('member')
+            console.log(GetUser, ' ini get User')
+            getModelToCheck.members.push(userId)
+
+            const UpdateUser = await User.findByIdAndUpdate(userId,GetUser)
+            const UpdateEvent = await EventModel.findByIdAndUpdate(eventId, getModelToCheck)
+
+            res.json({
+              message: 'Member Baru'
+            })
+          }
+          else if (idFound.length) {
+            res.json({
+              message: 'Password member lama'
+            })
+          }
+            console.log(idFound) 
+        }
+        else {
+          res.json({
+            message: 'Password is wrong'
+          })
+        }
+    }
+    catch (err) {
+      res.json({
+        err
+      })
+    }
+    
   }
   static deleteEvent(req, res) {
     let eventId = req.params.eventId;
