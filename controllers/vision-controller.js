@@ -20,9 +20,18 @@ const getPublicUrl = function (filename) {
 class Controller {
 
 	static uploadToStorage (req, res, next) {
+		// find req file
+		
+		// { 	fieldname: 'file',
+		// 	originalname: 'indomaret-3.JPG',
+		// 	encoding: '7bit',
+		// 	mimetype: 'image/jpeg',
+		// 	buffer: <Buffer ff d8 ff e1 2f fe 45 78 69 66 00 00 4d 4d 00 2a 00 00 00 08 00 0b 01 0f 00 02 00 00 00 06 00 00 00 92 01 10 00 02 00 00 00 09 00 00 00 98 01 12 00 03 ... >,
+		// 	size: 2200732 }
 
 		console.log('----------> Upload image started .....')
 		console.log('------> image file : ', req.file)
+		// console.log(req)
 		// console.log('ini request : ', req)
 
 		if (!req.file) {
@@ -102,7 +111,7 @@ class Controller {
 			})
 		})
 		.catch(function (response) {
-			console.log(response)
+			// console.log(response)
 
 			res.status(500)
 				.json({ error: response })

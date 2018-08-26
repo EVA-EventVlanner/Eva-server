@@ -77,7 +77,8 @@ class middlewares {
 			
 			// 3. getting the 'last price' - from the rightest part of sentence and traverse to the left.
 			
-			// console.log('-------> sentences : ', sentences)
+
+			console.log('-------> sentences : ', sentences)
 
 			for(let j in sentences) {
 				let sr = sentences[j].split(" ")
@@ -102,7 +103,7 @@ class middlewares {
 							break // end -- not an umber;
 						} else {
 							numCandidate = word+numCandidate;
-							// console.log('------> numCandidate is: ', numCandidate);
+							console.log('------> numCandidate is: ', numCandidate);
 							checkBefore = true;
 							continue
 						}
@@ -116,7 +117,7 @@ class middlewares {
 							break // end -- not an number
 						} else {
 							numCandidate = word+numCandidate
-							// console.log('------> numCandidate is: ', numCandidate);
+							console.log('------> numCandidate is: ', numCandidate);
 							checkBefore = false
 							continue
 						}
@@ -129,7 +130,7 @@ class middlewares {
 							break // end -- not an number
 						} else {
 							numCandidate = word+numCandidate
-							// console.log('------> numCandidate is: ', numCandidate)
+							console.log('------> numCandidate is: ', numCandidate)
 							checkBefore = false
 							continue
 						}
