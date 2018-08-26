@@ -20,8 +20,10 @@ const getPublicUrl = function (filename) {
 class Controller {
 
 	static uploadToStorage (req, res, next) {
-		console.log('----------> Upload image started .....')
+
+		//console.log('----------> Upload image started .....')
 		// console.log('------> image file : ', req.file)
+
 		if (!req.file) {
 			return next()
 		}
