@@ -20,7 +20,8 @@ const getPublicUrl = function (filename) {
 class Controller {
 
 	static uploadToStorage (req, res, next) {
-		
+		console.log('----------> Upload image started .....')
+		// console.log('------> image file : ', req.file)
 		if (!req.file) {
 			return next()
 		}
@@ -48,41 +49,50 @@ class Controller {
 		})
 		
 		stream.end(req.file.buffer)
+		console.log('upload end')
+		// console.log('upload ended, buffer: ', req.file.buffer)
 	}
 
 	static analyze (req, res, next) {
-		let uri = 'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDJX04YZhWWFxICsIF2u0E3t9f93sYnjqA'
-		// let receipt = req.body.image_url
+		console.log('----------> Analyze image started .....')
+
+		let uri = `https://vision.googleapis.com/v1/images:annotate?key=${process.env.VISION_API_KEY}`
+
+		// let receipt = req.body.image_url  // manual request usinig insomnia/ postman
 		let receipt = req.file.cloudStoragePublicUrl
 
-		console.log(receipt)
+		// console.log('cloudstoragepublicurl : ',req.file.cloudStoragePublicUrl)
+		// console.log('receipt : ', receipt)
 
 		axios.post(uri, 
 		{
-		"requests": [
-			{
-				"features": [
-					{
-					"type": "TEXT_DETECTION"
-					}
-				],
-				"image": {
-					"source": {
-					"imageUri": receipt
+			"requests": [
+				{
+					"features": [
+						{
+						"type": "TEXT_DETECTION"
+						}
+					],
+					"image": {
+						"source": {
+						"imageUri": receipt
+						}
 					}
 				}
-			}
-		]
-		} )
+			]
+		})
 		.then(function (response) {
-			console.log(response.data.responses)
+			// console.log(response.data.responses)
 			// res.send('ok')
+			// console.log('-------> get vision response')
+
 			response.data.responses.map( item => {
 				// res.send(item.textAnnotations)
 				
 				let result = vision.getItems(item.textAnnotations)
+
+				// console.log('-------> receiving result')
 				res.send(result)
-				
 			})
 		})
 		.catch(function (response) {
@@ -91,7 +101,6 @@ class Controller {
 			console.log(response)
 		})
 	}
-
 }
 
 const multer = Multer({
