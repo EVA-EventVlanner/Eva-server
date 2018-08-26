@@ -21,7 +21,7 @@ class Controller {
 
 	static uploadToStorage (req, res, next) {
 
-		//console.log('----------> Upload image started .....')
+		console.log('----------> Upload image started .....')
 		// console.log('------> image file : ', req.file)
 
 		if (!req.file) {
@@ -64,7 +64,7 @@ class Controller {
 		let receipt = req.file.cloudStoragePublicUrl
 
 		// console.log('cloudstoragepublicurl : ',req.file.cloudStoragePublicUrl)
-		// console.log('receipt : ', receipt)
+		console.log('receipt : ', receipt)
 
 		axios.post(uri, 
 		{
@@ -86,7 +86,7 @@ class Controller {
 		.then(function (response) {
 			// console.log(response.data.responses)
 			// res.send('ok')
-			// console.log('-------> get vision response')
+			console.log('-------> get vision response')
 
 			response.data.responses.map( item => {
 				// res.send(item.textAnnotations)
