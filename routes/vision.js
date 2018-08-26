@@ -5,11 +5,7 @@ const Vision = require('../controllers/vision-controller')
 router.post('/analyze', Vision.Controller.analyze)
 
 router.get('/test', function (req, res, next) {
-    res.status(200).send('test-ok')
-})
-
-router.get('/test', function (req, res, next) {
-    res.status(200).send('test-ok')
+    res.status(200).json({ message : 'test-ok'})
 })
 
 router.post('/upload',

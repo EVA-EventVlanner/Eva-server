@@ -94,13 +94,17 @@ class Controller {
 				let result = vision.getItems(item.textAnnotations)
 
 				// console.log('-------> receiving result')
-				res.send(result)
+				res
+					.status(200)
+					.json({ result })
+					
+				console.log(result)
 			})
 		})
 		.catch(function (response) {
-			res.status(500)
-
-			console.log(response)
+			res
+				.status(500)
+				.json({ error: response})
 		})
 	}
 }
