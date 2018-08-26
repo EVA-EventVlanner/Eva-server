@@ -2,14 +2,15 @@ const express = require('express')
 const router = express.Router()
 const Vision = require('../controllers/vision-controller')
 
-router.post('/analyze', Vision.analyze)
+router.post('/analyze', Vision.Controller.analyze)
 
-// router.get('/text', function(req, res) {
-//     var img = req.body.image_url
-
-//     Vision.analyze(img, function(result) {
-//         res.json(result)
-//     })
-// })
+router.post('/upload', Vision.multer.single('file'), Vision.Controller.uploadToStorage, function (req, res) {
+    res
+        .status(200)
+        .send ({
+            message: 'Upload successfull',
+            link: req.file.cloudStoragePublicUrl
+        })
+})
 
 module.exports = router

@@ -38,3 +38,6 @@ npm-debug.log
 # vision
 /source
 /vision-result
+
+# storage
+keyfile.json
