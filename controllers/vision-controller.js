@@ -30,16 +30,24 @@ class Controller {
 		// 	buffer: <Buffer ff d8 ff e1 2f fe 45 78 69 66 00 00 4d 4d 00 2a 00 00 00 08 00 0b 01 0f 00 02 00 00 00 06 00 00 00 92 01 10 00 02 00 00 00 09 00 00 00 98 01 12 00 03 ... >,
 		// 	size: 2200732 }
 
+		// res.send(req.file)
+
 		console.log('----------> Upload image started .....')
 
 		// for PRODUCTION case use req.file
-		// let image = req.file
+		let image = req.file
 		// for DEVELOPMENT case using emulator / android device
-		let image = req.body.file
+		// let image = req.body.file
 
 		console.log('passing 0')
 
-		if (!req.file) {
+		console.log('req.file --> ', req.file)
+
+		// console.log('req ---> ', req)
+
+		// console.log('req.body ---> ', req.body)
+
+		if (!image) {
 			return next()
 		}
 
@@ -86,9 +94,9 @@ class Controller {
 		let uri = `https://vision.googleapis.com/v1/images:annotate?key=${process.env.VISION_API_KEY}`
 
 		// for PRODUCTION case use req.file
-		// let image = req.file
+		let image = req.file
 		// for DEVELOPMENT case using emulator / android device
-		let image = req.body.file
+		// let image = req.body.file
 
 		// let receipt = req.body.image_url  // manual request usinig insomnia/ postman
 		let receipt = image.cloudStoragePublicUrl
