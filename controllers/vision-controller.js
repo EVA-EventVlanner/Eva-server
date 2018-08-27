@@ -2,6 +2,9 @@ const axios = require('axios')
 const vision = require('../middlewares/vision-logic')
 const Storage = require('@google-cloud/storage')
 const Multer = require('multer')
+const Item = require('../models/item-model')
+const EventModel = require("../models/event-model");
+const User = require("../models/user-model");
 require('dotenv').config()
 
 const CLOUD_BUCKET = process.env.CLOUD_BUCKET
@@ -55,7 +58,7 @@ class Controller {
 		// console.log('upload ended, buffer: ', req.file.buffer)
 	}
 
-	static analyze (req, res, next) {
+	static async analyze (req, res, next) {
 		console.log('----------> Analyze image started .....')
 
 		let uri = `https://vision.googleapis.com/v1/images:annotate?key=${process.env.VISION_API_KEY}`
@@ -65,47 +68,38 @@ class Controller {
 
 		// console.log('cloudstoragepublicurl : ',req.file.cloudStoragePublicUrl)
 		// console.log('receipt : ', receipt)
-
-		axios.post(uri, 
-		{
-			"requests": [
-				{
-					"features": [
-						{
-						"type": "TEXT_DETECTION"
-						}
-					],
-					"image": {
-						"source": {
-						"imageUri": receipt
+		try {
+			const response = await axios.post(uri, 
+			{
+				"requests": [
+					{
+						"features": [
+							{
+							"type": "TEXT_DETECTION"
+							}
+						],
+						"image": {
+							"source": {
+							"imageUri": receipt
+							}
 						}
 					}
-				}
-			]
-		})
-		.then(function (response) {
-			// console.log(response.data.responses)
-			// res.send('ok')
-			// console.log('-------> get vision response')
-
-			response.data.responses.map( item => {
-				// res.send(item.textAnnotations)
-				
+				]
+			})
+			response.data.responses.map(item=> {
 				let result = vision.getItems(item.textAnnotations)
-
-				// console.log('-------> receiving result')
-				res
-					.status(200)
-					.json({ result })
-					
+				res.status(200).json({
+					result
+				})
 				console.log(result)
 			})
-		})
-		.catch(function (response) {
-			res
-				.status(500)
-				.json({ error: response})
-		})
+		} catch(e) {
+			// statements
+			console.log(e);
+			res.json({
+				e
+			})
+		}
 	}
 }
 
