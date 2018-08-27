@@ -79,8 +79,7 @@ class Controller {
 
 		// console.log('receipt : ', receipt)
 		try {
-			const response = await axios.post(uri, 
-			{
+			const response = await axios.post(uri, {
 				"requests": [
 					{
 						"features": [
@@ -96,12 +95,13 @@ class Controller {
 					}
 				]
 			})
+
 			response.data.responses.map(item=> {
 				let result = vision.getItems(item.textAnnotations)
 				res.status(200).json({
 					result
 				})
-
+			})
 		} catch(e) {
 			// statements
 			console.log(e);
@@ -109,11 +109,6 @@ class Controller {
 				e
 			})
 		}
-		})
-		.catch(function (response) {
-			res.status(500)
-				.json({ error: response })
-		})
 	}
 }
 
