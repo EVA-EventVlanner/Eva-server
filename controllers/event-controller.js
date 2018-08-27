@@ -214,7 +214,7 @@ class Controller {
     console.log(quantity);
     try {
       const newItem = await Item.create(obj)
-      const getEvent = await EventModel.findById(eventId).populate('admin')
+      const getEvent = await EventModel.findById(eventId).populate('admin').populate('items')
       getEvent.items.push(newItem)
       getEvent.currentBudget -= newItem.itemPrice
       const updateEvent = await EventModel.findByIdAndUpdate(eventId,getEvent)
