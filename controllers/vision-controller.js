@@ -1,27 +1,26 @@
-const axios = require('axios')
-const vision = require('../middlewares/vision-logic')
-const Storage = require('@google-cloud/storage')
-const Multer = require('multer')
-const Item = require('../models/item-model')
+const axios = require("axios");
+const vision = require("../middlewares/vision-logic");
+const Storage = require("@google-cloud/storage");
+const Multer = require("multer");
+const Item = require("../models/item-model");
 const EventModel = require("../models/event-model");
 const User = require("../models/user-model");
-require('dotenv').config()
+require("dotenv").config();
 
-const CLOUD_BUCKET = process.env.CLOUD_BUCKET
+const CLOUD_BUCKET = process.env.CLOUD_BUCKET;
 
 const storage = Storage({
-	projectId: process.env.GCLOUD_PROJECT,
-	keyFilename: process.env.KEYFILE_PATH
-})
+  projectId: process.env.GCLOUD_PROJECT,
+  keyFilename: process.env.KEYFILE_PATH
+});
 
-const bucket = storage.bucket(CLOUD_BUCKET)
+const bucket = storage.bucket(CLOUD_BUCKET);
 
-const getPublicUrl = function (filename) {
-	return `https://storage.googleapis.com/${CLOUD_BUCKET}/${filename}`
-}
+const getPublicUrl = function(filename) {
+  return `https://storage.googleapis.com/${CLOUD_BUCKET}/${filename}`;
+};
 
 class Controller {
-
 	static uploadToStorage (req, res, next) {
 
 		// { 	fieldname: 'file',
@@ -131,10 +130,10 @@ class Controller {
 }
 
 const multer = Multer({
-	storage: Multer.MemoryStorage,
-	limits: {
-		fileSize: 5 * 1024 * 1024
-	}
-})
+  storage: Multer.MemoryStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024
+  }
+});
 
-module.exports = { Controller, multer }
+module.exports = { Controller, multer };
