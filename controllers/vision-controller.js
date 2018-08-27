@@ -33,13 +33,12 @@ class Controller {
 
 		console.log('----------> Upload image started .....')
 
-		console.log('------> image file : ', req.body.file)
-
 		// for PRODUCTION case use req.file
-
+		// let image = req.file
 		// for DEVELOPMENT case using emulator / android device
+		let image = req.body.file
 
-		// console.log('--------> check req :', req)
+		console.log('passing 0')
 
 		if (!req.file) {
 			return next()
@@ -47,39 +46,39 @@ class Controller {
 
 		console.log('passing 1')
 
-		const gcsname = Date.now() + req.body.file.originalname
+		const gcsname = Date.now() + image.originalname
 		
 		const file = bucket.file(gcsname)
 		
 		const stream = file.createWriteStream({
 			metadata: {
-				contentType: req.body.file.mimetype
+				contentType: image.mimetype
 			}
 		})
 		
 		console.log('passing 2')
 
 		stream.on('error', (err) => {
-			req.body.file.cloudStorageError = err
+			image.cloudStorageError = err
 			next(err)
 		})
 
 		console.log('passing 3')
 		
 		stream.on('finish', () => {
-			req.body.file.cloudStorageObject = gcsname
+			image.cloudStorageObject = gcsname
 			file.makePublic().then(() => {
-				req.body.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
+				image.cloudStoragePublicUrl = getPublicUrl(gcsname)
 				next()
 			})
 		})
 		
 		console.log('passing 4')
 		
-		stream.end(req.body.file.buffer)
+		stream.end(image.buffer)
 		console.log('upload end')
-		console.log('Url link hasil upload : ', req.body.file.cloudStoragePublicUrl)
-		// console.log('upload ended, buffer: ', req.file.buffer)
+		console.log('Url link hasil upload : ', image.cloudStoragePublicUrl)
+		console.log('upload ended, buffer: ', image.buffer)
 	}
 
 	static async analyze (req, res, next) {
@@ -87,10 +86,15 @@ class Controller {
 
 		let uri = `https://vision.googleapis.com/v1/images:annotate?key=${process.env.VISION_API_KEY}`
 
-		// let receipt = req.body.image_url  // manual request usinig insomnia/ postman
-		let receipt = req.body.file.cloudStoragePublicUrl
+		// for PRODUCTION case use req.file
+		// let image = req.file
+		// for DEVELOPMENT case using emulator / android device
+		let image = req.body.file
 
-		// console.log('cloudstoragepublicurl : ',req.file.cloudStoragePublicUrl)
+		// let receipt = req.body.image_url  // manual request usinig insomnia/ postman
+		let receipt = image.cloudStoragePublicUrl
+
+		console.log('cloudstoragepublicurl : ', receipt)
 
 		try {
 			const response = await axios.post(uri, {
