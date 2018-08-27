@@ -23,9 +23,23 @@ const getPublicUrl = function (filename) {
 class Controller {
 
 	static uploadToStorage (req, res, next) {
+		// find req file
 
-		//console.log('----------> Upload image started .....')
-		// console.log('------> image file : ', req.file)
+		// { 	fieldname: 'file',
+		// 	originalname: 'indomaret-3.JPG',
+		// 	encoding: '7bit',
+		// 	mimetype: 'image/jpeg',
+		// 	buffer: <Buffer ff d8 ff e1 2f fe 45 78 69 66 00 00 4d 4d 00 2a 00 00 00 08 00 0b 01 0f 00 02 00 00 00 06 00 00 00 92 01 10 00 02 00 00 00 09 00 00 00 98 01 12 00 03 ... >,
+		// 	size: 2200732 }
+
+		console.log('----------> Upload image started .....')
+		console.log('------> image file : ', req.file)
+
+		console.log('--------> check req :', req)
+
+
+		// console.log(req)
+		// console.log('ini request : ', req)
 
 		if (!req.file) {
 			return next()
@@ -55,7 +69,7 @@ class Controller {
 		
 		stream.end(req.file.buffer)
 		console.log('upload end')
-		// console.log('upload ended, buffer: ', req.file.buffer)
+		console.log('upload ended, buffer: ', req.file.buffer)
 	}
 
 	static async analyze (req, res, next) {
@@ -67,6 +81,7 @@ class Controller {
 		let receipt = req.file.cloudStoragePublicUrl
 
 		// console.log('cloudstoragepublicurl : ',req.file.cloudStoragePublicUrl)
+
 		// console.log('receipt : ', receipt)
 		try {
 			const response = await axios.post(uri, 
@@ -91,8 +106,7 @@ class Controller {
 				res.status(200).json({
 					result
 				})
-				console.log(result)
-			})
+
 		} catch(e) {
 			// statements
 			console.log(e);
@@ -100,6 +114,11 @@ class Controller {
 				e
 			})
 		}
+		})
+		.catch(function (response) {
+			res.status(500)
+				.json({ error: response })
+		})
 	}
 }
 
