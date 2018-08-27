@@ -1,12 +1,18 @@
 const express = require('express')
 const router = express.Router()
 const Vision = require('../controllers/vision-controller')
+const Upload = require('../controllers/upload-controller')
+const Multer = require('multer')
 
-router.post('/analyze', Vision.Controller.analyze)
+const multer = Multer({
+    storage: Multer.MemoryStorage,
+    fileSize: 5 * 1024 * 1024
+})
 
-router.post('/upload',
-                Vision.multer.single('file'),
-                Vision.Controller.uploadToStorage,
-                Vision.Controller.analyze )
+router.post('/analyze', Vision.analyze)
+
+router.post('/downloadToServer', Vision.downloadToServer)
+
+router.post('/uploadAnalyze', multer.single('image'), Upload.uploadGCS, Vision.analyze)
 
 module.exports = router
