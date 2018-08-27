@@ -7,6 +7,8 @@ let eventSchema = Schema({
     admin: {type: Schema.Types.ObjectId, ref: 'user'},
     members: [{type: Schema.Types.ObjectId, ref: 'user'}],
     budget: Number,
+    currentBudget: Number,
+    deadlineDate: String,
     description: String,
     imageUrl: String,
     location: String,

@@ -3,7 +3,11 @@ const User = require("../models/user-model");
 const Item = require("../models/item-model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const DATE = new Date(2020, 4, 10);
+const moment = require('moment')
 
+// id thor 5b8006bb32426203ca2c5a21
+// event fo test 5b82bd98ceabcd09bc64e621
 class Controller {
   static getAllEvent(req, res) {
     EventModel.find()
@@ -55,7 +59,6 @@ class Controller {
     const salt = bcrypt.genSaltSync(7);
     const hash = bcrypt.hashSync(req.body.password, salt);
     let password = hash;
-
     let obj = {
       eventName: req.body.eventName,
       password: password,
@@ -63,7 +66,9 @@ class Controller {
       budget: req.body.budget,
       description: req.body.description,
       imageUrl: req.body.imageUrl,
-      location: req.body.location
+      location: req.body.location,
+      deadlineDate:moment(DATE).format('MMMM Do YYYY'),
+      currentBudget: req.body.budget,
     };
 
     let newEvent = new EventModel(obj);
@@ -88,14 +93,7 @@ class Controller {
         });
       });
   }
-  // static loginAlreadyMember (req,res) {
-  //   let userId = req.params.id
-  //   let eventId = req.params.eventId
-  //   EventModel.findById(eventId)
-  //   .then(event=> {
-  //     event.
-  //   })
-  // }
+
   static async loginEvent(req, res) {
     let eventId = req.params.eventId;
     let userId = req.params.userId
@@ -202,7 +200,7 @@ class Controller {
     });
   }
 
-  static createItemForEvent(req, res) {
+  static async createItemForEvent(req, res) {
     let eventId = req.params.eventId;
     let quantity = req.body.quantity;
     let obj = {
@@ -214,18 +212,22 @@ class Controller {
     };
     console.log(obj);
     console.log(quantity);
-    let newItem = new Item(obj);
-    newItem.save().then(item => {
-      EventModel.findById(eventId).then(event => {
-        event.items.push(item._id);
-        EventModel.findByIdAndUpdate(eventId, event).then(newEventUpdated => {
-          res.json({
-            message: "Succesfully added new Item",
-            item
-          });
-        });
-      });
-    });
+    try {
+      const newItem = await Item.create(obj)
+      const getEvent = await EventModel.findById(eventId).populate('admin')
+      getEvent.items.push(newItem)
+      getEvent.currentBudget -= newItem.itemPrice
+      const updateEvent = await EventModel.findByIdAndUpdate(eventId,getEvent)
+      res.json({
+        newItem,
+        getEvent
+      })
+    } catch(e) {
+      res.json({
+        message: e
+      })
+      console.log(e);
+    }
   }
 
   static getOneItem(req, res) {
