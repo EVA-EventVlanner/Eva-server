@@ -21,7 +21,7 @@ class Controller {
 
 	static uploadToStorage (req, res, next) {
 		// find req file
-		
+
 		// { 	fieldname: 'file',
 		// 	originalname: 'indomaret-3.JPG',
 		// 	encoding: '7bit',
@@ -31,6 +31,10 @@ class Controller {
 
 		console.log('----------> Upload image started .....')
 		console.log('------> image file : ', req.file)
+
+		console.log('--------> check req :', req)
+
+
 		// console.log(req)
 		// console.log('ini request : ', req)
 
