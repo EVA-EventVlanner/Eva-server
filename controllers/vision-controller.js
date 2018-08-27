@@ -23,7 +23,6 @@ const getPublicUrl = function (filename) {
 class Controller {
 
 	static uploadToStorage (req, res, next) {
-		// find req file
 
 		// { 	fieldname: 'file',
 		// 	originalname: 'indomaret-3.JPG',
@@ -33,13 +32,9 @@ class Controller {
 		// 	size: 2200732 }
 
 		console.log('----------> Upload image started .....')
-		console.log('------> image file : ', req.file)
+		console.log('------> image file : ', req.body.file)
 
-		console.log('--------> check req :', req)
-
-
-		// console.log(req)
-		// console.log('ini request : ', req)
+		// console.log('--------> check req :', req)
 
 		if (!req.file) {
 			return next()
