@@ -1,93 +1,11 @@
 const axios = require("axios");
 const vision = require("../middlewares/vision-logic");
-const Storage = require("@google-cloud/storage");
-const Multer = require("multer");
-const Item = require("../models/item-model");
-const EventModel = require("../models/event-model");
-const User = require("../models/user-model");
+// const Item = require("../models/item-model");
+// const EventModel = require("../models/event-model");
+// const User = require("../models/user-model");
 require("dotenv").config();
 
-const CLOUD_BUCKET = process.env.CLOUD_BUCKET;
-
-const storage = Storage({
-  projectId: process.env.GCLOUD_PROJECT,
-  keyFilename: process.env.KEYFILE_PATH
-});
-
-const bucket = storage.bucket(CLOUD_BUCKET);
-
-const getPublicUrl = function(filename) {
-  return `https://storage.googleapis.com/${CLOUD_BUCKET}/${filename}`;
-};
-
 class Controller {
-	static uploadToStorage (req, res, next) {
-
-		// { 	fieldname: 'file',
-		// 	originalname: 'indomaret-3.JPG',
-		// 	encoding: '7bit',
-		// 	mimetype: 'image/jpeg',
-		// 	buffer: <Buffer ff d8 ff e1 2f fe 45 78 69 66 00 00 4d 4d 00 2a 00 00 00 08 00 0b 01 0f 00 02 00 00 00 06 00 00 00 92 01 10 00 02 00 00 00 09 00 00 00 98 01 12 00 03 ... >,
-		// 	size: 2200732 }
-
-		// res.send(req.file)
-
-		console.log('----------> Upload image started .....')
-
-		// for PRODUCTION case use req.file
-		let image = req.file
-		// for DEVELOPMENT case using emulator / android device
-		// let image = req.body.file
-
-		console.log('passing 0')
-
-		console.log('req.file --> ', req.file)
-
-		// console.log('req ---> ', req)
-
-		// console.log('req.body ---> ', req.body)
-
-		if (!image) {
-			return next()
-		}
-
-		console.log('passing 1')
-
-		const gcsname = Date.now() + image.originalname
-		
-		const file = bucket.file(gcsname)
-		
-		const stream = file.createWriteStream({
-			metadata: {
-				contentType: image.mimetype
-			}
-		})
-		
-		console.log('passing 2')
-
-		stream.on('error', (err) => {
-			image.cloudStorageError = err
-			next(err)
-		})
-
-		console.log('passing 3')
-		
-		stream.on('finish', () => {
-			image.cloudStorageObject = gcsname
-			file.makePublic().then(() => {
-				image.cloudStoragePublicUrl = getPublicUrl(gcsname)
-				next()
-			})
-		})
-		
-		console.log('passing 4')
-		
-		stream.end(image.buffer)
-		console.log('upload end')
-		console.log('Url link hasil upload : ', image.cloudStoragePublicUrl)
-		console.log('upload ended, buffer: ', image.buffer)
-	}
-
 	static async analyze (req, res, next) {
 		console.log('----------> Analyze image started .....')
 
@@ -135,13 +53,36 @@ class Controller {
 			})
 		}
 	}
+
+	static downloadToServer (req, res, next) {
+		let fs = require('fs')
+		let request = require('request');
+
+		let fileName = 'receipt' + Date.now() + '.jpg'
+		
+		let download = function(uri, filename, callback){
+			request.head(uri, function(err, res, body){
+				console.log('content-type:', res.headers['content-type']);
+				console.log('content-length:', res.headers['content-length']);
+
+				request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+			})
+		}
+
+		download(req.body.image_url, fileName, function() {
+			console.log('done');
+			res.json({message: 'image download done'})
+		})
+		// let axios = require('axios')
+
+		// axios.get('https://firebasestorage.googleapis.com/v0/b/burogu-desu.appspot.com/o/receipt%2F1535275956074indomaret.jpg?alt=media&token=1e652fe6-6108-4db8-9faf-e0d5c4ff0313')
+		// .then (response => 
+		// 	res.json({response: response})
+		// )
+		// .catch(err => {
+		// 	res.json({ error: err.message})
+		// })
+	}
 }
 
-const multer = Multer({
-  storage: Multer.MemoryStorage,
-  limits: {
-    fileSize: 5 * 1024 * 1024
-  }
-});
-
-module.exports = { Controller, multer };
+module.exports = Controller

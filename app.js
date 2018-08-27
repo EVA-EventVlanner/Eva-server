@@ -8,6 +8,7 @@ const index = require('./routes/index');
 const users = require('./routes/users');
 const events = require('./routes/events');
 const vision = require('./routes/vision');
+const upload = require('./routes/upload');
 
 const app = express();
 const cors = require('cors')
@@ -37,6 +38,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/events', events);
 app.use('/vision', vision);
+app.use('/storage', upload);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
