@@ -32,14 +32,12 @@ class Controller {
 		// 	size: 2200732 }
 
 		console.log('----------> Upload image started .....')
+
 		console.log('------> image file : ', req.body.file)
-		console.log('------> ini req.file : ', req.file)
 
-		// for production case using insomnia
-		// let imagefile = req.file
+		// for PRODUCTION case use req.file
 
-		// for development case using emulator / android device
-		let imageFile = req.body.file
+		// for DEVELOPMENT case using emulator / android device
 
 		// console.log('--------> check req :', req)
 
@@ -47,30 +45,40 @@ class Controller {
 			return next()
 		}
 
-		const gcsname = Date.now() + imageFile.originalname
+		console.log('passing 1')
+
+		const gcsname = Date.now() + req.body.file.originalname
+		
 		const file = bucket.file(gcsname)
 		
 		const stream = file.createWriteStream({
 			metadata: {
-				contentType: imageFile.mimetype
+				contentType: req.body.file.mimetype
 			}
 		})
 		
+		console.log('passing 2')
+
 		stream.on('error', (err) => {
-			imageFile.cloudStorageError = err
+			req.body.file.cloudStorageError = err
 			next(err)
 		})
+
+		console.log('passing 3')
 		
 		stream.on('finish', () => {
-			imageFile.cloudStorageObject = gcsname
+			req.body.file.cloudStorageObject = gcsname
 			file.makePublic().then(() => {
-				imageFile.cloudStoragePublicUrl = getPublicUrl(gcsname)
+				req.body.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
 				next()
 			})
 		})
 		
-		stream.end(imageFile.buffer)
+		console.log('passing 4')
+		
+		stream.end(req.body.file.buffer)
 		console.log('upload end')
+		console.log('Url link hasil upload : ', req.body.file.cloudStoragePublicUrl)
 		// console.log('upload ended, buffer: ', req.file.buffer)
 	}
 
@@ -80,7 +88,7 @@ class Controller {
 		let uri = `https://vision.googleapis.com/v1/images:annotate?key=${process.env.VISION_API_KEY}`
 
 		// let receipt = req.body.image_url  // manual request usinig insomnia/ postman
-		let receipt = req.file.cloudStoragePublicUrl
+		let receipt = req.body.file.cloudStoragePublicUrl
 
 		// console.log('cloudstoragepublicurl : ',req.file.cloudStoragePublicUrl)
 
