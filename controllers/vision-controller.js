@@ -33,38 +33,45 @@ class Controller {
 
 		console.log('----------> Upload image started .....')
 		console.log('------> image file : ', req.body.file)
+		console.log('------> ini req.file : ', req.file)
+
+		// for production case using insomnia
+		// let imagefile = req.file
+
+		// for development case using emulator / android device
+		let imageFile = req.body.file
 
 		// console.log('--------> check req :', req)
 
 		if (!req.file) {
 			return next()
 		}
-		
-		const gcsname = Date.now() + req.file.originalname
+
+		const gcsname = Date.now() + imageFile.originalname
 		const file = bucket.file(gcsname)
 		
 		const stream = file.createWriteStream({
 			metadata: {
-				contentType: req.file.mimetype
+				contentType: imageFile.mimetype
 			}
 		})
 		
 		stream.on('error', (err) => {
-			req.file.cloudStorageError = err
+			imageFile.cloudStorageError = err
 			next(err)
 		})
 		
 		stream.on('finish', () => {
-			req.file.cloudStorageObject = gcsname
+			imageFile.cloudStorageObject = gcsname
 			file.makePublic().then(() => {
-				req.file.cloudStoragePublicUrl = getPublicUrl(gcsname)
+				imageFile.cloudStoragePublicUrl = getPublicUrl(gcsname)
 				next()
 			})
 		})
 		
-		stream.end(req.file.buffer)
+		stream.end(imageFile.buffer)
 		console.log('upload end')
-		console.log('upload ended, buffer: ', req.file.buffer)
+		// console.log('upload ended, buffer: ', req.file.buffer)
 	}
 
 	static async analyze (req, res, next) {
@@ -77,7 +84,6 @@ class Controller {
 
 		// console.log('cloudstoragepublicurl : ',req.file.cloudStoragePublicUrl)
 
-		// console.log('receipt : ', receipt)
 		try {
 			const response = await axios.post(uri, {
 				"requests": [
