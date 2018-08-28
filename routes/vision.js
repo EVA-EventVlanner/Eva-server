@@ -9,8 +9,6 @@ const multer = Multer({
     fileSize: 5 * 1024 * 1024
 })
 
-router.post('/downloadToServer', Vision.downloadToServer)
-
 router.post('/uploadAnalyze', multer.single('image'), Upload.uploadGCS, Vision.analyze)
 
 router.post('/analyzelink', Vision.analyzeWithLink)
