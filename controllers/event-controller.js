@@ -33,6 +33,7 @@ class Controller {
     EventModel.findById(eventId)
       .populate("admin")
       .populate("items")
+      .populate('usersWhoInDebt')
       .then(event => {
         res.status(200).json({
           message: "Get one Event",
@@ -274,7 +275,7 @@ class Controller {
       let getItem = await Item.findById(itemId);
       let getEvent = await EventModel.findById(eventId);
       let getUser = await User.findById(userId);
-      if (getItem.quantity > 0) {
+      if (getItem.quantity>0) {
         if (receiptPrice < getItem.itemPrice) {
           let debtItem = getItem.itemPrice - receiptPrice;
           let obj = {
@@ -283,28 +284,35 @@ class Controller {
             itemName: itemId,
             debt: debtItem
           };
-          getItem.quantity--;
-          let updateItem = await Item.findByIdAndUpdate(itemId, getItem);
-          let newDebt = await Debt.create(obj);
+          const newDebt = await Debt.create(obj)
+          getEvent.usersWhoInDebt.push(newDebt._id)
+          getUser.debt.push(newDebt._id)
+          getItem.quantity--
+          const updateItem = await Item.findByIdAndUpdate(itemId,getItem)
+          const updateEvent = await EventModel.findByIdAndUpdate(eventId, getEvent)
+          const updateUser = await User.findByIdAndUpdate(userId, getUser)
           res.json({
-            message: "Harga kurang cuy",
-            debtItem,
             newDebt,
+            getEvent,
+            getUser,
             getItem
-          });
+          })
         } else {
+          getItem.quantity--
+          const updateItem = await Item.findByIdAndUpdate(itemId,getItem)
           res.json({
+            getEvent,
             message: "work",
             receiptPrice,
             getItem,
-            getEvent,
-            getUser
           });
-        }
-      } else {
+        } 
+      }
+      else {
         res.json({
-          message: "Barang telah terjual habis"
-        });
+          message: 'Barang telah habis',
+          disabled: true
+        })
       }
     } catch (error) {}
   }

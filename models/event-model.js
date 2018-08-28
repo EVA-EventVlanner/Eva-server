@@ -14,7 +14,7 @@ let eventSchema = Schema({
     location: String,
     items: [{type: Schema.Types.ObjectId, ref: 'item'}],
     purchasedItems: [],
-    usersWhoInDebt: [{type: Schema.Types.ObjectId, ref: 'user'}]
+    usersWhoInDebt: [{type: Schema.Types.ObjectId, ref: 'debt'}]
 },{timestamp: true})
 
 let events = mongoose.model('event',eventSchema)
