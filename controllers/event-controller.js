@@ -1,10 +1,11 @@
 const EventModel = require("../models/event-model");
 const User = require("../models/user-model");
 const Item = require("../models/item-model");
+const Debt = require("../models/debt-model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const DATE = new Date(2020, 4, 10);
-const moment = require('moment')
+const moment = require("moment");
 
 // id thor 5b8006bb32426203ca2c5a21
 // event fo test 5b82bd98ceabcd09bc64e621
@@ -67,8 +68,8 @@ class Controller {
       description: req.body.description,
       imageUrl: req.body.imageUrl,
       location: req.body.location,
-      deadlineDate:moment(DATE).format('MMMM Do YYYY'),
-      currentBudget: req.body.budget,
+      deadlineDate: moment(DATE).format("MMMM Do YYYY"),
+      currentBudget: req.body.budget
     };
 
     let newEvent = new EventModel(obj);
@@ -96,89 +97,86 @@ class Controller {
 
   static async loginEvent(req, res) {
     let eventId = req.params.eventId;
-    let userId = req.params.userId
+    let userId = req.params.userId;
     console.log(eventId, " ini event id");
-    console.log(userId.length, " ini user id")
+    console.log(userId.length, " ini user id");
     try {
       const getModelToCheck = await EventModel.findById({
         _id: eventId
-      })
+      });
       const isPassword = await bcrypt.compareSync(
-          req.body.password,
-          getModelToCheck.password
-        )
-        if (isPassword) {
-          let idFound = await getModelToCheck.members.filter(function(member) {
-            let temp = (JSON.stringify(member))
-            let newMember = temp.slice(1,temp.length-1)
-            return newMember===userId
-          })
-          if (!idFound.length) {
-            // statement
-            const GetUser = await User.findById(userId)
+        req.body.password,
+        getModelToCheck.password
+      );
+      if (isPassword) {
+        let idFound = await getModelToCheck.members.filter(function(member) {
+          let temp = JSON.stringify(member);
+          let newMember = temp.slice(1, temp.length - 1);
+          return newMember === userId;
+        });
+        if (!idFound.length) {
+          // statement
+          const GetUser = await User.findById(userId);
 
-            GetUser.events.push(eventId)
-            GetUser.role.push('member')
-            console.log(GetUser, ' ini get User')
-            getModelToCheck.members.push(userId)
+          GetUser.events.push(eventId);
+          GetUser.role.push("member");
+          console.log(GetUser, " ini get User");
+          getModelToCheck.members.push(userId);
 
-            const UpdateUser = await User.findByIdAndUpdate(userId,GetUser)
-            const UpdateEvent = await EventModel.findByIdAndUpdate(eventId, getModelToCheck)
+          const UpdateUser = await User.findByIdAndUpdate(userId, GetUser);
+          const UpdateEvent = await EventModel.findByIdAndUpdate(
+            eventId,
+            getModelToCheck
+          );
 
-            res.json({
-              message: 'Member Baru'
-            })
-          }
-          else if (idFound.length) {
-            res.json({
-              message: 'Password member lama'
-            })
-          }
-            console.log(idFound) 
-        }
-        else {
           res.json({
-            message: 'Password is wrong'
-          })
+            message: "Member Baru"
+          });
+        } else if (idFound.length) {
+          res.json({
+            message: "Password member lama"
+          });
         }
-    }
-    catch (err) {
+        console.log(idFound);
+      } else {
+        res.json({
+          message: "Password is wrong"
+        });
+      }
+    } catch (err) {
       res.json({
         err
-      })
+      });
     }
-    
   }
 
-  static async loginEventWithoutPassword (req, res) {
-    let eventId = req.params.eventId
-    let userId = req.params.userId
+  static async loginEventWithoutPassword(req, res) {
+    let eventId = req.params.eventId;
+    let userId = req.params.userId;
     try {
-      const GetEvent = await EventModel.findById(eventId)
-      const FilterId = await GetEvent.members.filter(function(member){
-        let temp = (JSON.stringify(member))
-        let newMember = temp.slice(1,temp.length-1)
-        return newMember===userId
-      })
+      const GetEvent = await EventModel.findById(eventId);
+      const FilterId = await GetEvent.members.filter(function(member) {
+        let temp = JSON.stringify(member);
+        let newMember = temp.slice(1, temp.length - 1);
+        return newMember === userId;
+      });
 
       if (!FilterId.length) {
         // statement
         res.json({
-          message: 'You\'re not member',
-          NeedPassword : true
-        })
-      }
-      else if(FilterId.length) {
+          message: "You're not member",
+          NeedPassword: true
+        });
+      } else if (FilterId.length) {
         res.json({
-          message: 'You\'re member of this event',
-          NeedPassword : false
-        })
+          message: "You're member of this event",
+          NeedPassword: false
+        });
       }
-    }
-    catch(err) {
+    } catch (err) {
       res.json({
         err
-      })
+      });
     }
   }
 
@@ -213,19 +211,21 @@ class Controller {
     console.log(obj);
     console.log(quantity);
     try {
-      const newItem = await Item.create(obj)
-      const getEvent = await EventModel.findById(eventId).populate('admin').populate('items')
-      getEvent.items.push(newItem)
-      getEvent.currentBudget -= newItem.itemPrice
-      const updateEvent = await EventModel.findByIdAndUpdate(eventId,getEvent)
+      const newItem = await Item.create(obj);
+      const getEvent = await EventModel.findById(eventId)
+        .populate("admin")
+        .populate("items");
+      getEvent.items.push(newItem);
+      getEvent.currentBudget -= newItem.itemPrice;
+      const updateEvent = await EventModel.findByIdAndUpdate(eventId, getEvent);
       res.json({
         newItem,
         getEvent
-      })
-    } catch(e) {
+      });
+    } catch (e) {
       res.json({
         message: e
-      })
+      });
       console.log(e);
     }
   }
@@ -262,6 +262,51 @@ class Controller {
         });
       });
     });
+  }
+
+  static async verifyingItem(req, res) {
+    //http://localhost:3000/events/5b85425f36226f1d447c8ef9/item/5b8542dd36226f1d447c8efa/buy/5b85420236226f1d447c8ef8
+    let eventId = req.params.eventId;
+    let userId = req.params.userId;
+    let itemId = req.params.itemId;
+    let receiptPrice = req.body.receiptPrice;
+    try {
+      let getItem = await Item.findById(itemId);
+      let getEvent = await EventModel.findById(eventId);
+      let getUser = await User.findById(userId);
+      if (getItem.quantity > 0) {
+        if (receiptPrice < getItem.itemPrice) {
+          let debtItem = getItem.itemPrice - receiptPrice;
+          let obj = {
+            eventName: eventId,
+            userInDebt: userId,
+            itemName: itemId,
+            debt: debtItem
+          };
+          getItem.quantity--;
+          let updateItem = await Item.findByIdAndUpdate(itemId, getItem);
+          let newDebt = await Debt.create(obj);
+          res.json({
+            message: "Harga kurang cuy",
+            debtItem,
+            newDebt,
+            getItem
+          });
+        } else {
+          res.json({
+            message: "work",
+            receiptPrice,
+            getItem,
+            getEvent,
+            getUser
+          });
+        }
+      } else {
+        res.json({
+          message: "Barang telah terjual habis"
+        });
+      }
+    } catch (error) {}
   }
 }
 
