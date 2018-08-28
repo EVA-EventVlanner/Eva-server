@@ -1,7 +1,7 @@
 const User = require('../models/user-model')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-
+const EventModel = require('../models/event-model')
 class Controller {
     static getUsers(req,res) {
         User.find()
@@ -27,6 +27,20 @@ class Controller {
         let userId = req.params.id
         User.findById(userId)
         .populate('events')
+        .populate({
+            path: 'debt',
+            populate: {
+                path: 'eventName',
+                model: 'event'
+            }
+        })
+        .populate({
+            path: 'debt',
+            populate: {
+                path: 'itemName',
+                model: 'item'
+            }
+        })
         .then(user=> {
             res
                 .status(200)
