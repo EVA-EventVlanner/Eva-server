@@ -83,7 +83,7 @@ class middlewares {
 			for(let j in sentences) {
 				let sr = sentences[j].split(" ")
 
-				// console.log("--> sentence is ",sentences[j])
+				console.log("--> sentence is ",sentences[j])
 				console.log("---->sr is ",sr)
 				
 				let numCandidate = ""
@@ -144,7 +144,7 @@ class middlewares {
 				for (let i = 0; i < sr.length; i++) {
 					let wordToCompare = sr[i].toLowerCase()
 
-					if (wordToCompare === 'total' || wordToCompare === 'amount' || wordToCompare === 'total:' || wordToCompare === 'amount:') {
+					if (wordToCompare === 'tota' || wordToCompare === 'total' || wordToCompare === 'amount' || wordToCompare === 'total:' || wordToCompare === 'amount:') {
 						receiptTotal = numCandidate
 					}
 				}
@@ -171,7 +171,7 @@ class middlewares {
 						anyUnrelevantWord = true
 					}
 
-					if (sr[i].toLowerCase().includes('total')) {
+					if (sr[i].toLowerCase().includes('tota')) {
 						beforeTotalWord = true
 					}
 				}
@@ -179,17 +179,23 @@ class middlewares {
 				if (sentencePushStart === true && anyDate === false && anyUnrelevantWord === false && beforeTotalWord === false) {
 					let curatedsr = sr.splice(0, sr.length - 2)
 
-					if (sr.length > 3) {						
-						items.push({
-							item : curatedsr.join(" "),
-							number: Number(numCandidate)
-						})
-					} else {
-						items.push({
-							item : curatedsr.join(" "),
-							number: Number(numCandidate)
-						})
+					let itemQty = 0
+					let srQty = Number(curatedsr[curatedsr.length - 1])
+
+					console.log('quantity ---> ', srQty)
+					var hundred = /^[1-9][0-9]?$|^100$/
+					let qtyTest = hundred.test(srQty)
+					console.log('qtytest --> ', qtyTest)
+					if (qtyTest) {
+						itemQty = srQty
 					}
+
+						items.push({
+							item : curatedsr.join(" "),
+							number: Number(numCandidate),
+							quantity: itemQty
+						})
+
 				}
 			}
 
