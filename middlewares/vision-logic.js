@@ -76,15 +76,14 @@ class middlewares {
 			startXMax = startx + thresholdXPct * startx / 100
 			
 			// 3. getting the 'last price' - from the rightest part of sentence and traverse to the left.
-			
 
-			console.log('-------> sentences : ', sentences)
+			// console.log('-------> sentences : ', sentences)
 
 			for(let j in sentences) {
 				let sr = sentences[j].split(" ")
 
-				console.log("--> sentence is ",sentences[j])
-				console.log("---->sr is ",sr)
+				// console.log("--> sentence is ",sentences[j])
+				// console.log("---->sr is ",sr)
 				
 				let numCandidate = ""
 				let checkBefore = true
@@ -103,7 +102,7 @@ class middlewares {
 							break // end -- not an umber;
 						} else {
 							numCandidate = word+numCandidate;
-							console.log('------> numCandidate is: ', numCandidate);
+							// console.log('------> numCandidate is: ', numCandidate);
 							checkBefore = true;
 							continue
 						}
@@ -182,10 +181,9 @@ class middlewares {
 					let itemQty = 0
 					let srQty = Number(curatedsr[curatedsr.length - 1])
 
-					console.log('quantity ---> ', srQty)
 					var hundred = /^[1-9][0-9]?$|^100$/
 					let qtyTest = hundred.test(srQty)
-					console.log('qtytest --> ', qtyTest)
+
 					if (qtyTest) {
 						itemQty = srQty
 					}
@@ -200,6 +198,8 @@ class middlewares {
 			}
 
 			let output = { receiptDate, receiptItems: items, receiptTotal: Number(receiptTotal) }
+
+			console.log('Output to client : ', output)
 
 			return output
     }

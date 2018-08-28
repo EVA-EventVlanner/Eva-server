@@ -73,8 +73,6 @@ class Controller {
 			console.log('receipt url : ', receipt)
 		}
 
-		console.log('cloudstoragepublicurl : ', receipt)
-
 		try {
 			const response = await axios.post(uri, {
 				"requests": [
