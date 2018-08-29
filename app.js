@@ -17,7 +17,7 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 
 // DB Demo
-mongoose.connect('mongodb://thor:08november@ds153521.mlab.com:53521/demo_eva')
+mongoose.connect('mongodb://thor:08november@ds153521.mlab.com:53521/demo_eva', {useNewUrlParser: true})
 
 // DB Testing
 // mongoose.connect('mongodb://arief:08november@ds229312.mlab.com:29312/eva-db', {useNewUrlParser: true})
