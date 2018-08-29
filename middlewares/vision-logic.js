@@ -188,11 +188,12 @@ class middlewares {
 						itemQty = srQty
 					}
 
-						items.push({
-							item : curatedsr.join(" "),
-							number: Number(numCandidate),
-							quantity: itemQty
-						})
+					items.push({
+						item : curatedsr.join(" "),
+						number: Number(numCandidate),
+						quantity: itemQty,
+						disabled: false
+					})
 
 				}
 			}
