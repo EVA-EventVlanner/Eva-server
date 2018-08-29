@@ -17,12 +17,9 @@ describe('Vision Testing', function () {
             .send(bodyRequest)
             .end(function (err, result) {
                 setTimeout(function () {
-
-                    console.log('ini result : ', result)
                     result.should.have.status(200)
-                    
                     done()
-                }, 5000)
+                }, 10000)
             })
         })
     })
