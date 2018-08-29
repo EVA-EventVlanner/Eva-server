@@ -58,27 +58,22 @@ class Controller {
 
     let receiptUrl = [
       { type: "transport", url: "https://i.imgur.com/VxTJoGG.jpg" },
-      {
-        type: "consumption",
-        url: "https://storage.googleapis.com/soc-uploadfile/kfc.jpg"
-      },
       { type: "needs", url: "https://i.imgur.com/PDOqZvm.jpg" }
     ];
 
     let receipt = "";
 
+    // if (req.body.image_url) {
+    //   receipt = req.body.image_url;
+    //   console.log("receipt url : ", receipt);
+    // } else
+    
     if (req.body.type === "transport") {
       receipt = receiptUrl[0].url;
       console.log("receipt url transport : ", receipt);
-    } else if (req.body.type === "consumption") {
-      receipt = receiptUrl[1].url;
-      console.log("receipt url consumption : ", receipt);
-    } else if (req.body.type === "needs") {
-      receipt = receiptUrl[2].url;
-      console.log("receipt url needs : ", receipt);
     } else {
-      receipt = req.body.image_url;
-      console.log("receipt url : ", receipt);
+      receipt = receiptUrl[1].url;
+      console.log("receipt url needs : ", receipt);
     }
 
     try {
