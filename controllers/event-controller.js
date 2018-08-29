@@ -217,7 +217,7 @@ class Controller {
         .populate("admin")
         .populate("items");
       getEvent.items.push(newItem);
-      getEvent.currentBudget -= newItem.itemPrice;
+      getEvent.currentBudget = getEvent.currentBudget - (newItem.itemPrice * quantity);
       const updateEvent = await EventModel.findByIdAndUpdate(eventId, getEvent);
       res.json({
         newItem,
