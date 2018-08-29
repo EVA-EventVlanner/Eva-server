@@ -1,0 +1,5 @@
+let moment = require('moment')
+let date = new Date(2018, 08, 20)
+console.log(date)
+console.log(moment(date).format('MMMM Do YYYY'))
+console.log(moment(date).fromNow())
