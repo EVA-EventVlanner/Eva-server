@@ -271,13 +271,14 @@ class Controller {
     let userId = req.params.userId;
     let itemId = req.params.itemId;
     let receiptPrice = req.body.receiptPrice;
+    let itemQuantity = req.body.itemQuantity;
     try {
       let getItem = await Item.findById(itemId);
       let getEvent = await EventModel.findById(eventId);
       let getUser = await User.findById(userId);
-      if (getItem.quantity>0) {
+      if ( getItem.quantity > 0 && getItem.quantity >= itemQuantity) {
         if (receiptPrice < getItem.itemPrice) {
-          let debtItem = getItem.itemPrice - receiptPrice;
+          let debtItem = getItem.itemPrice - (receiptPrice * itemQuantity);
           let obj = {
             eventName: eventId,
             userInDebt: userId,
@@ -287,8 +288,11 @@ class Controller {
           const newDebt = await Debt.create(obj)
           getEvent.usersWhoInDebt.push(newDebt._id)
           getUser.debt.push(newDebt._id)
-          getItem.quantity--
-          const updateItem = await Item.findByIdAndUpdate(itemId,getItem)
+          // change
+          let newItem = getItem
+          newItem.quantity = newItem.quantity - itemQuantity
+          // getItem.quantity--
+          const updateItem = await Item.findByIdAndUpdate(itemId,newItem)
           const updateEvent = await EventModel.findByIdAndUpdate(eventId, getEvent)
           const updateUser = await User.findByIdAndUpdate(userId, getUser)
           res.json({
@@ -307,8 +311,12 @@ class Controller {
             getItem,
           });
         } 
-      }
-      else {
+      } else if (getItem.quantity < itemQuantity) {
+        res.json({
+          message: 'Quota pembelian terlalu banyak',
+          disabled: true
+        })
+      } else {
         res.json({
           message: 'Barang telah habis',
           disabled: true
